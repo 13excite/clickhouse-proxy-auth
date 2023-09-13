@@ -2,21 +2,19 @@
 package api
 
 import (
-	"context"
 	"encoding/json"
+	"net"
 	"net/http"
 
 	"github.com/go-chi/chi"
+	"go.uber.org/zap"
 )
-
-// Service are the methods used to retrieve the API data
-type Service interface {
-	AuthClickhouseReq(context.Context) (AuthResponse, error)
-}
 
 // handler implements the main api logic
 type handler struct {
-	service Service
+	hostToCluster    map[string]string
+	aclClustersRules map[string][]string
+	logger           *zap.SugaredLogger
 }
 
 // AuthResponse is the response for a authClickhouse request
@@ -28,10 +26,8 @@ type AuthResponse struct {
 type HandlerOpt func(*handler)
 
 // NewHandler creates a new Clickhouse Auth API
-func NewHandler(service Service, opts ...HandlerOpt) http.Handler {
-	h := &handler{
-		service: service,
-	}
+func NewHandler(opts ...HandlerOpt) http.Handler {
+	h := &handler{}
 	for _, o := range opts {
 		o(h)
 	}
@@ -45,6 +41,33 @@ func NewHandler(service Service, opts ...HandlerOpt) http.Handler {
 
 // TODO: add logic
 func (h *handler) authClickhouse(w http.ResponseWriter, r *http.Request) {
+	remoteIp := r.Header.Get("X-Remote-IP")
+	serverName := r.Header.Get("X-Server")
+	if serverName == "" {
+		h.logger.Warn("header X-Server not found.", "Headers: ", r.Header)
+		respondWithError(w, http.StatusForbidden, "header X-Server not found")
+		return
+	}
+	clusterName, clusterNameOk := h.hostToCluster[serverName]
+	if !clusterNameOk {
+		h.logger.Warn("server not found in config ", "Server", serverName)
+		respondWithError(w, http.StatusForbidden, "Access denied")
+		return
+	}
+
+	currentClusterRules := h.aclClustersRules[clusterName]
+	allowAccess, err := checkIpInSubnet(remoteIp, currentClusterRules)
+	if err != nil {
+		h.logger.Warn("Could not parsing subnet ", "Error: ", err)
+		respondWithError(w, http.StatusForbidden, "Invalid subnets")
+		return
+	}
+	if !allowAccess {
+		h.logger.Infow("subnets doesn't contains x-real-ip", "x-real-ip", remoteIp)
+		respondWithError(w, http.StatusForbidden, "Access denied")
+		return
+	}
+	h.logger.Infow("Allow access", "x-real-ip", remoteIp, " to cluster: ", clusterName)
 	respondWithJSON(w, http.StatusOK, map[string]string{"status": "OK"})
 
 }
@@ -59,4 +82,22 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	w.Write(response)
+}
+
+// checkIpInSubnet checks contains ip in subnet
+func checkIpInSubnet(ipAddr string, subnets []string) (bool, error) {
+	// iterate by subnets array and check
+	// does subnet contain addr or not
+	for _, subnet := range subnets {
+		_, subnetParse, err := net.ParseCIDR(subnet)
+		if err != nil {
+			return false, err
+		}
+		ipAddrParse := net.ParseIP(ipAddr)
+		if subnetParse.Contains(ipAddrParse) {
+			return true, nil
+		} // end if contains
+	} // end for
+
+	return false, nil
 }
