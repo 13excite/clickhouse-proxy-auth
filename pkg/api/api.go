@@ -25,10 +25,11 @@ type AuthResponse struct {
 type HandlerOpt func(*handler)
 
 // NewHandler creates a new Clickhouse Auth API
-func NewHandler(opts ...HandlerOpt) http.Handler {
-	h := &handler{}
-	for _, o := range opts {
-		o(h)
+func NewHandler(aclClusterRules map[string][]string, hostToCluster map[string]string) http.Handler {
+	h := &handler{
+		logger:           zap.S().With("package", "autocomplete"),
+		hostToCluster:    hostToCluster,
+		aclClustersRules: aclClusterRules,
 	}
 
 	router := chi.NewRouter()
@@ -38,7 +39,7 @@ func NewHandler(opts ...HandlerOpt) http.Handler {
 	return router
 }
 
-// TODO: add logic
+// authClickhouse is the main handler for the authClickhouse request
 func (h *handler) authClickhouse(w http.ResponseWriter, r *http.Request) {
 	remoteIp := r.Header.Get("X-Remote-IP")
 	serverName := r.Header.Get("X-Server")

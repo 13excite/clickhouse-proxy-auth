@@ -14,6 +14,7 @@ const DefaultConfigPath = "/etc/ch-proxy-auth.yaml"
 type Config struct {
 	ServerHost        string              `yaml:"server_host"`
 	ServerPort        string              `yaml:"server_port"`
+	MetricsPort       int                 `yaml:"metrics_port"`
 	Level             string              `yaml:"log_level"`
 	Encoding          string              `yaml:"log_encoding"`
 	Color             bool                `yaml:"log_color"`
@@ -31,6 +32,7 @@ type Config struct {
 func (conf *Config) Defaults() {
 	conf.ServerHost = "127.0.0.1"
 	conf.ServerPort = "8081"
+	conf.MetricsPort = 8080
 	conf.Level = "info"
 	conf.Encoding = "console"
 	conf.Color = false
