@@ -3,7 +3,6 @@ package api
 
 import (
 	"encoding/json"
-	"net"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -44,13 +43,13 @@ func (h *handler) authClickhouse(w http.ResponseWriter, r *http.Request) {
 	remoteIp := r.Header.Get("X-Remote-IP")
 	serverName := r.Header.Get("X-Server")
 	if serverName == "" {
-		h.logger.Warn("header X-Server not found.", "Headers: ", r.Header)
+		h.logger.Warn("header X-Server not found.", "headers: ", r.Header)
 		respondWithError(w, http.StatusForbidden, "header X-Server not found")
 		return
 	}
 	clusterName, clusterNameOk := h.hostToCluster[serverName]
 	if !clusterNameOk {
-		h.logger.Warn("server not found in config ", "Server", serverName)
+		h.logger.Warn("server not found in config ", "s erver", serverName)
 		respondWithError(w, http.StatusForbidden, "Access denied")
 		return
 	}
@@ -82,22 +81,4 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	w.Write(response)
-}
-
-// checkIpInSubnet checks contains ip in subnet
-func checkIpInSubnet(ipAddr string, subnets []string) (bool, error) {
-	// iterate by subnets array and check
-	// does subnet contain addr or not
-	for _, subnet := range subnets {
-		_, subnetParse, err := net.ParseCIDR(subnet)
-		if err != nil {
-			return false, err
-		}
-		ipAddrParse := net.ParseIP(ipAddr)
-		if subnetParse.Contains(ipAddrParse) {
-			return true, nil
-		} // end if contains
-	} // end for
-
-	return false, nil
 }
