@@ -32,7 +32,7 @@ type Config struct {
 func (conf *Config) Defaults() {
 	conf.ServerHost = "127.0.0.1"
 	conf.ServerPort = "8081"
-	conf.MetricsPort = 8080
+	conf.MetricsPort = 8090
 	conf.Level = "info"
 	conf.Encoding = "console"
 	conf.Color = false
