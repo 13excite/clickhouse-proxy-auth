@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"log"
 	"net/http"
 	"time"
 
@@ -19,7 +20,8 @@ var (
 )
 
 func init() {
-	flag.StringVar(&configPath, "config", "", "path to the cfgig file")
+	flag.StringVar(&configPath, "config", "", "path to the cfg file")
+	flag.Parse()
 }
 
 func main() {
@@ -28,13 +30,19 @@ func main() {
 	cfg := config.Config{}
 	cfg.Defaults()
 
+	cfg.ReadConfigFile(configPath)
+
+	if err := config.InitLogger(&cfg); err != nil {
+		log.Fatalf("could not configure logger: %v", err)
+	}
 	logger := zap.S().With("package", "cmd")
 
 	// create a new prom metric server with default registry
-	metricsServer := metrics.NewMetricServer(cfg.MetricsPort, nil)
+	promRegistry := metrics.BuildRegistry()
+	metricsServer := metrics.NewMetricServer(cfg.MetricsPort, promRegistry)
 
 	// create the mux
-	mux := router.New(cfg)
+	mux := router.New(cfg, promRegistry)
 
 	// create a http server
 	server := http.Server{
@@ -55,6 +63,7 @@ func main() {
 	group.Go(
 		metricsServer.ListenAndServe,
 	)
+	logger.Infow("starting server", "host", cfg.ServerHost, "port", cfg.ServerPort)
 
 	err := group.Wait()
 	if err != nil {

@@ -50,7 +50,7 @@ func (h *handler) authClickhouse(w http.ResponseWriter, r *http.Request) {
 	}
 	clusterName, clusterNameOk := h.hostToCluster[serverName]
 	if !clusterNameOk {
-		h.logger.Warn("server not found in config ", "s erver", serverName)
+		h.logger.Warn("server not found in config ", "server ", serverName)
 		respondWithError(w, http.StatusForbidden, "Access denied")
 		return
 	}

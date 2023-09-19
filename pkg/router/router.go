@@ -2,15 +2,17 @@ package router
 
 import (
 	"github.com/go-chi/chi/middleware"
+	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/13excite/clickhouse-proxy-auth/pkg/api"
 	"github.com/13excite/clickhouse-proxy-auth/pkg/config"
+	"github.com/13excite/clickhouse-proxy-auth/pkg/metrics"
 
 	"github.com/go-chi/chi"
 )
 
 // New creates a new router
-func New(conf config.Config) *chi.Mux {
+func New(conf config.Config, registry *prometheus.Registry) *chi.Mux {
 	mux := chi.NewRouter()
 	// health endpoint
 	mux.Use(middleware.Heartbeat("/healthz"))
@@ -20,8 +22,12 @@ func New(conf config.Config) *chi.Mux {
 	mux.Group(func(groupRouter chi.Router) {
 		groupRouter.Use(middleware.NoCache)
 		groupRouter.Use(loggerHTTPMiddlewareDefault(conf.IgnorePaths))
+		if registry != nil {
+			groupRouter.Use(metrics.BuildRequestMiddleware(registry))
 
-		groupRouter.Mount("/auth", api.NewHandler(conf.NetAclClusters, conf.HostToCluster))
+		}
+
+		groupRouter.Mount("/", api.NewHandler(conf.NetAclClusters, conf.HostToCluster))
 
 	})
 	return mux
