@@ -10,7 +10,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-// NewMetricServer builds srv for prometheus metrics
+// NewMetricServer builds server for prometheus metrics
 func NewMetricServer(port int, registry *prometheus.Registry) *http.Server {
 	mux := chi.NewRouter()
 	var handler http.Handler

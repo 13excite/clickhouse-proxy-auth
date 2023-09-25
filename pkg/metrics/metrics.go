@@ -8,6 +8,6 @@ import (
 func buildHTTPRequestCounterCollector() *prometheus.CounterVec {
 	return prometheus.NewCounterVec(prometheus.CounterOpts{
 		Name: "ch_proxy_auth_http_requests_total",
-		Help: "Count of HTTP requests",
-	}, []string{"method", "path", "statuscode"})
+		Help: "Count of HTTP requests by clickhouse nodes and status codes",
+	}, []string{"ch_server", "statuscode"})
 }

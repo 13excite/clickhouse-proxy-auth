@@ -12,6 +12,7 @@ import (
 func BuildRequestMiddleware(registry *prometheus.Registry) func(next http.Handler) http.Handler {
 	httpRequestCounter := buildHTTPRequestCounterCollector()
 
+	prometheus.Register(httpRequestCounter)
 	err := registry.Register(httpRequestCounter)
 	if err != nil {
 		// TODO: add custom logs
@@ -23,7 +24,9 @@ func BuildRequestMiddleware(registry *prometheus.Registry) func(next http.Handle
 			rw := newResponseWriter(w)
 
 			next.ServeHTTP(rw, r)
-			httpRequestCounter.WithLabelValues(r.Method, r.RequestURI, strconv.Itoa(rw.statusCode)).Inc()
+			serverName := r.Header.Get("X-Server")
+
+			httpRequestCounter.WithLabelValues(serverName, strconv.Itoa(rw.statusCode)).Inc()
 		})
 	}
 }
