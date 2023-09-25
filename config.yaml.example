@@ -1,0 +1,32 @@
+---
+server_host: 127.0.0.1
+server_port: 8081
+metrics_port: 8090
+log_level: info
+log_encoding: console
+log_color: true
+log_disable_stacktrace: true
+log_dev_mode: true
+log_disable_caller: false
+log_disabled_http:
+  - "/version"
+  - "/health"
+
+host_to_cluster:
+  ch-node123: data_science
+  ch-node345: data_science
+  ch-node0011: analytics
+  ch-node0022: analytics
+  ch-node3333: another_team
+
+
+net_acl_clusters:
+  data_science:
+    - 10.10.10.0/24
+    - 100.10.20.0/24
+  analytics:
+    - 100.64.101.0/23
+    - 100.64.121.0/23
+  another_team:
+    - 100.128.131.0/23
+    - 100.64.150.0/24
