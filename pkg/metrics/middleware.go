@@ -16,7 +16,7 @@ func BuildRequestMiddleware(registry *prometheus.Registry) func(next http.Handle
 	err := registry.Register(httpRequestCounter)
 	if err != nil {
 		// TODO: add custom logs
-		log.Printf("BuildRequestMiddleware failed: %w", err)
+		log.Printf("BuildRequestMiddleware failed: %s", err.Error())
 	}
 
 	return func(next http.Handler) http.Handler {

@@ -41,7 +41,7 @@ func NewHandler(aclClusterRules map[string][]string, hostToCluster map[string]st
 
 // authClickhouse is the main handler for the authClickhouse request
 func (h *handler) authClickhouse(w http.ResponseWriter, r *http.Request) {
-	remoteIp := r.Header.Get("X-Remote-IP")
+	remoteIP := r.Header.Get("X-Remote-IP")
 	serverName := r.Header.Get("X-Server")
 	if serverName == "" {
 		h.logger.Warn("header X-Server not found.", "headers: ", r.Header)
@@ -56,18 +56,18 @@ func (h *handler) authClickhouse(w http.ResponseWriter, r *http.Request) {
 	}
 
 	currentClusterRules := h.aclClustersRules[clusterName]
-	allowAccess, err := checkIpInSubnet(remoteIp, currentClusterRules)
+	allowAccess, err := checkIpInSubnet(remoteIP, currentClusterRules)
 	if err != nil {
 		h.logger.Warn("Could not parsing subnet ", "Error: ", err)
 		respondWithError(w, http.StatusForbidden, "Invalid subnets")
 		return
 	}
 	if !allowAccess {
-		h.logger.Infow("subnets doesn't contains x-real-ip", "x-real-ip", remoteIp)
+		h.logger.Infow("subnets doesn't contains x-real-ip", "x-real-ip", remoteIP)
 		respondWithError(w, http.StatusForbidden, "Access denied")
 		return
 	}
-	h.logger.Infow("Allow access", "x-real-ip", remoteIp, " to cluster: ", clusterName)
+	h.logger.Infow("Allow access", "x-real-ip", remoteIP, " to cluster: ", clusterName)
 	respondWithJSON(w, http.StatusOK, map[string]string{"status": "OK"})
 
 }
