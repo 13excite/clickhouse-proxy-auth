@@ -13,7 +13,7 @@ const DefaultConfigPath = "/etc/ch-proxy-auth.yaml"
 // Config contains settings of the logger
 type Config struct {
 	ServerHost        string              `yaml:"server_host"`
-	ServerPort        string              `yaml:"server_port"`
+	ServerPort        int                 `yaml:"server_port"`
 	MetricsPort       int                 `yaml:"metrics_port"`
 	Level             string              `yaml:"log_level"`
 	Encoding          string              `yaml:"log_encoding"`
@@ -31,7 +31,7 @@ type Config struct {
 // Defaults initializes default logger settings
 func (conf *Config) Defaults() {
 	conf.ServerHost = "127.0.0.1"
-	conf.ServerPort = "8081"
+	conf.ServerPort = 8081
 	conf.MetricsPort = 8090
 	conf.Level = "info"
 	conf.Encoding = "console"
