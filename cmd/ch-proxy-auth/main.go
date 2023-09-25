@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -46,7 +47,8 @@ func main() {
 
 	// create a http server
 	server := http.Server{
-		Addr:              cfg.ServerHost + ":" + cfg.ServerPort,
+
+		Addr:              fmt.Sprintf("%s:%d", cfg.ServerHost, cfg.ServerPort),
 		Handler:           mux,
 		ReadTimeout:       10 * time.Second,
 		ReadHeaderTimeout: 5 * time.Second,
