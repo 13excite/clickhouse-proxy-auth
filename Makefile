@@ -1,13 +1,13 @@
 SHELL := /bin/bash
 
 # constant variables
-PROJECT_NAME 	= ns-cleaner
-BINARY_NAME 	= ns-cleaner
-GIT_COMMIT 		= $(shell git rev-parse HEAD)
-BINARY_TAR_DIR 	= $(BINARY_NAME)-$(GIT_COMMIT)
+PROJECT_NAME	= clickhouse-proxy-auth
+BINARY_NAME	= clickhouse-proxy-auth
+GIT_COMMIT	= $(shell git rev-parse HEAD)
+BINARY_TAR_DIR	= $(BINARY_NAME)-$(GIT_COMMIT)
 BINARY_TAR_FILE	= $(BINARY_TAR_DIR).tar.gz
-BUILD_VERSION 	= $(shell cat VERSION.txt)
-BUILD_DATE 		= $(shell date -u '+%Y-%m-%d_%H:%M:%S')
+BUILD_VERSION	= $(shell cat VERSION.txt)
+BUILD_DATE	= $(shell date -u '+%Y-%m-%d_%H:%M:%S')
 
 
 # golangci-lint config
