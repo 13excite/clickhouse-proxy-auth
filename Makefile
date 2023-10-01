@@ -30,5 +30,4 @@ lint:
 
 build:
 	@echo 'compiling binary...'
-	@cd cmd/ch-proxy-auth/ && GOARCH=arm64 GOOS=linux go build -ldflags "-X main.buildTimestamp=$(BUILD_DATE) -X main.gitHash=$(GIT_COMMIT) -X main.buildVersion=$(BUILD_VERSION)" -o ../$(BINARY_NAME)
-
+	@GOARCH=arm64 GOOS=linux go build -ldflags "-X main.buildTimestamp=$(BUILD_DATE) -X main.gitHash=$(GIT_COMMIT) -X main.buildVersion=$(BUILD_VERSION)" -o ./$(BINARY_NAME)  cmd/$(PROJECT_NAME)/main.go
