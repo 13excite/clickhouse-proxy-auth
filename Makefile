@@ -9,6 +9,10 @@ BINARY_TAR_FILE	= $(BINARY_TAR_DIR).tar.gz
 BUILD_VERSION	= $(shell cat VERSION.txt)
 BUILD_DATE	= $(shell date -u '+%Y-%m-%d_%H:%M:%S')
 
+# Terminal colors config
+NO_COLOR=\033[0m
+OK_COLOR=\033[32;01m
+
 
 # golangci-lint config
 golangci_lint_version=latest
@@ -27,6 +31,11 @@ fmt:
 lint:
 	@printf "$(OK_COLOR)==> Running golang-ci-linter via Docker$(NO_COLOR)\n"
 	@$(run_lint) golangci-lint run --timeout=5m --verbose
+
+test:
+	@printf "$(OK_COLOR)==> Running tests$(NO_COLOR)\n"
+	@go test -v -count=1 -covermode=atomic -coverpkg=./... -coverprofile=coverage.txt ./...
+	@go tool cover -func coverage.txt
 
 build:
 	@echo 'compiling binary...'
