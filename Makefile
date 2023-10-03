@@ -13,6 +13,11 @@ BUILD_DATE	= $(shell date -u '+%Y-%m-%d_%H:%M:%S')
 NO_COLOR=\033[0m
 OK_COLOR=\033[32;01m
 
+# golangci-lint config
+golangci_lint_version=latest
+vols=-v `pwd`:/app -w /app
+run_lint=docker run --rm $(vols) golangci/golangci-lint:$(golangci_lint_version)
+
 
 # golangci-lint config
 golangci_lint_version=latest
@@ -23,7 +28,7 @@ run_lint=docker run --rm $(vols) golangci/golangci-lint:$(golangci_lint_version)
 
 SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 
-.PHONY: lint fmt
+.PHONY: lint fmt test build
 
 fmt:
 	@gofmt -l -w $(SRC)

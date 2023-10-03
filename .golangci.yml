@@ -1,12 +1,23 @@
+run:
+  timeout: 5m
+  skip-dirs:
+    - .github
+    - hack
+    - vendor
 linters:
-  # keep default set of linters enabled
-  disable-all: false
-
-
-  # also enable a couple more
+  disable-all: true
   enable:
     - gofmt
-    - golint
     - revive
-    - unconvert
-    - exportloopref
+    - goimports
+    - deadcode
+    - govet
+    - unused
+    - whitespace
+    - misspell
+  fast: false
+linters-settings:
+  gofmt:
+    simplify: false
+issues:
+  exclude-use-default: false
