@@ -70,7 +70,7 @@ func TestNewHandler(t *testing.T) {
 			wantStatusCode:  http.StatusForbidden,
 		},
 		{
-			name: "error 'invalid subnets' expected",
+			name: "error invalid subnets expected",
 			aclClusterRules: map[string][]string{
 				"data_science": {"10.300.10.0/24", "100.300.20.0/24"}},
 			hostToCluster:    map[string]string{"clickhouse-1": "data_science"},
@@ -80,6 +80,19 @@ func TestNewHandler(t *testing.T) {
 			requstXRemoteIP:  "300.290.10.10",
 			wantErr:          true,
 			expectedErrorMsg: "Invalid subnets",
+			wantStatusCode:   http.StatusForbidden,
+		},
+		{
+			name: "error x-server header not found expected",
+			aclClusterRules: map[string][]string{
+				"data_science": {"10.10.10.0/24", "100.10.20.0/24"}},
+			hostToCluster:    map[string]string{"clickhouse-1": "data_science"},
+			method:           http.MethodGet,
+			path:             "/auth",
+			requestXServer:   "",
+			requstXRemoteIP:  "10.10.10.10",
+			wantErr:          true,
+			expectedErrorMsg: "header X-Server not found",
 			wantStatusCode:   http.StatusForbidden,
 		},
 		// add case >>>>header X-Server not found<<<<<

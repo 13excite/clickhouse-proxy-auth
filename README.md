@@ -6,6 +6,8 @@ with advanced security settings.
 Access is granted based on the following logic: 'Are requests from the
 corresponding subnet allowed for the corresponding clickhouse cluster?'"
 
+## Examples
+
 Example of nginx config:
 
 ```nginx
