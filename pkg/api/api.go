@@ -56,7 +56,7 @@ func (h *handler) authClickhouse(w http.ResponseWriter, r *http.Request) {
 	}
 
 	currentClusterRules := h.aclClustersRules[clusterName]
-	allowAccess, err := checkIpInSubnet(remoteIP, currentClusterRules)
+	allowAccess, err := checkIPInSubnet(remoteIP, currentClusterRules)
 	if err != nil {
 		h.logger.Warn("Could not parsing subnet ", "Error: ", err)
 		respondWithError(w, http.StatusForbidden, "Invalid subnets")
@@ -69,7 +69,6 @@ func (h *handler) authClickhouse(w http.ResponseWriter, r *http.Request) {
 	}
 	h.logger.Infow("Allow access", "x-real-ip", remoteIP, " to cluster: ", clusterName)
 	respondWithJSON(w, http.StatusOK, map[string]string{"status": "OK"})
-
 }
 
 func respondWithError(w http.ResponseWriter, code int, message string) {

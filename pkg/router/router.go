@@ -1,3 +1,4 @@
+// Package router assembles the router from packages under pkg/api
 package router
 
 import (
@@ -24,12 +25,8 @@ func New(conf config.Config, registry *prometheus.Registry) *chi.Mux {
 		groupRouter.Use(loggerHTTPMiddlewareDefault(conf.IgnorePaths))
 		if registry != nil {
 			groupRouter.Use(metrics.BuildRequestMiddleware(registry))
-
 		}
-
-		groupRouter.Mount("/", api.NewHandler(conf.NetAclClusters, conf.HostToCluster))
-
+		groupRouter.Mount("/", api.NewHandler(conf.NetACLClusters, conf.HostToCluster))
 	})
 	return mux
-
 }

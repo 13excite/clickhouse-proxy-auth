@@ -1,4 +1,3 @@
-// Package log contains methods and settings of the main logger
 package config
 
 import (

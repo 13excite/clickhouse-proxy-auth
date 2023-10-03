@@ -4,8 +4,8 @@ import (
 	"net"
 )
 
-// checkIpInSubnet checks contains ip in subnet
-func checkIpInSubnet(ipAddr string, subnets []string) (bool, error) {
+// checkIPInSubnet checks contains ip in subnet
+func checkIPInSubnet(ipAddr string, subnets []string) (bool, error) {
 	// iterate by subnets array and check
 	// does subnet contain addr or not
 	for _, subnet := range subnets {

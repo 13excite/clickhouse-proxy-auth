@@ -1,3 +1,4 @@
+// Package config contains settings and basic logger configuration
 package config
 
 import (
@@ -8,6 +9,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// DefaultConfigPath is the default path to the config files
 const DefaultConfigPath = "/etc/ch-proxy-auth.yaml"
 
 // Config contains settings of the logger
@@ -25,7 +27,7 @@ type Config struct {
 	OutputPaths       []string            `yaml:"log_output_paths"` // will skip it for while
 	ErrorOutputPaths  []string            `yaml:"log_err_output_paths"`
 	HostToCluster     map[string]string   `yaml:"host_to_cluster"`
-	NetAclClusters    map[string][]string `yaml:"net_acl_clusters"`
+	NetACLClusters    map[string][]string `yaml:"net_acl_clusters"`
 }
 
 // Defaults initializes default logger settings
@@ -64,7 +66,7 @@ func (conf *Config) GetHostsClustersMap() map[string]string {
 	return conf.HostToCluster
 }
 
-// GetNetAclClusters returns map of clusters to subnets
-func (conf *Config) GetNetAclClusters() map[string][]string {
-	return conf.NetAclClusters
+// GetNetACLClusters returns map of clusters to subnets
+func (conf *Config) GetNetACLClusters() map[string][]string {
+	return conf.NetACLClusters
 }
