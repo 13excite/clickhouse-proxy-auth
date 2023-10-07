@@ -6,6 +6,32 @@ with advanced security settings.
 Access is granted based on the following logic: 'Are requests from the
 corresponding subnet allowed for the corresponding clickhouse cluster?'"
 
+## Overview of make commands
+
+### Fmt go code
+
+```make
+make fmt
+```
+
+### Run golangci in docker
+
+```make
+make lint
+```
+
+### Run go test
+
+```make
+make test
+```
+
+### Build binary
+
+```make
+make build
+```
+
 ## Examples
 
 Example of nginx config:
