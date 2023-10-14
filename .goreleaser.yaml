@@ -1,0 +1,40 @@
+# This is an example .goreleaser.yml file with some sensible defaults.
+# Make sure to check the documentation at https://goreleaser.com
+project_name: clickhouse-proxy-auth
+builds:
+  - id: "chproxy-auth"
+    binary: "clickhouse-proxy-auth"
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+    main: ./cmd/clickhouse-proxy-auth
+    ldflags:
+      - -s -w -X github.com/13excite/clickhouse-proxy-auth/pkg/version.Version={{.Version}} -X github.com/13excite/clickhouse-proxy-auth/pkg/version.Commit={{.Commit}} -X github.com/13excite/clickhouse-proxy-auth/pkg/version.Date={{ .CommitDate }}
+archives:
+  - id: "chproxy-auth"
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else if eq .Arch "darwin" }}Darwin
+      {{- else if eq .Arch "linux" }}Linux
+      {{- else }}{{ .Arch }}{{ end }}
+    allow_different_binary_count: true
+checksum:
+  name_template: "checksums.txt"
+  ids:
+    - "chproxy-auth"
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+release:
+  prerelease: auto
