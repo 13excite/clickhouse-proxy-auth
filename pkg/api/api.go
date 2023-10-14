@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/13excite/clickhouse-proxy-auth/pkg/version"
+
 	"github.com/go-chi/chi"
 	"go.uber.org/zap"
 )
@@ -35,6 +37,7 @@ func NewHandler(aclClusterRules map[string][]string, hostToCluster map[string]st
 	router := chi.NewRouter()
 	router.Route("/", func(r chi.Router) {
 		r.Get("/auth", h.authClickhouse)
+		r.Get("/version", h.serveVersion)
 	})
 	return router
 }
@@ -69,6 +72,13 @@ func (h *handler) authClickhouse(w http.ResponseWriter, r *http.Request) {
 	}
 	h.logger.Infow("Allow access", "x-real-ip", remoteIP, " to cluster: ", clusterName)
 	respondWithJSON(w, http.StatusOK, map[string]string{"status": "OK"})
+}
+
+// serveHTTP implements the http.Handler interface
+// TODO: move to the separate pkg
+func (h *handler) serveVersion(w http.ResponseWriter, _ *http.Request) {
+	buildInfo := version.Build
+	respondWithJSON(w, http.StatusOK, buildInfo)
 }
 
 func respondWithError(w http.ResponseWriter, code int, message string) {
