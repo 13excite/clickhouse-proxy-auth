@@ -28,7 +28,7 @@ jobs:
         run: git fetch --force --tags
 
       - name: Check branch
-        run: git branch --contains $(git rev-parse ${{github.ref_name}} ) | grep 'release/${{github.ref_name}}$'
+        run: git branch --contains $(git rev-parse ${{github.ref_name}} ) | grep 'master'
 
       - name: Setup Go
         uses: actions/setup-go@v3
