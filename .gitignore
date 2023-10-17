@@ -11,4 +11,5 @@ __pycache__
 ./*.ini
 .vscode
 env
+dist/
 coverage.txt

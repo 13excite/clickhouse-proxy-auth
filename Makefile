@@ -28,7 +28,7 @@ run_lint=docker run --rm $(vols) golangci/golangci-lint:$(golangci_lint_version)
 
 SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 
-.PHONY: lint fmt test build
+.PHONY: lint fmt test build build-release
 
 fmt:
 	@gofmt -l -w $(SRC)
@@ -44,4 +44,7 @@ test:
 
 build:
 	@echo 'compiling binary...'
-	@GOARCH=arm64 GOOS=linux go build -ldflags "-X main.buildTimestamp=$(BUILD_DATE) -X main.gitHash=$(GIT_COMMIT) -X main.buildVersion=$(BUILD_VERSION)" -o ./$(BINARY_NAME)  cmd/$(PROJECT_NAME)/main.go
+	@GOARCH=amd64 GOOS=linux go build -ldflags "-X main.buildTimestamp=$(BUILD_DATE) -X main.gitHash=$(GIT_COMMIT) -X main.buildVersion=$(BUILD_VERSION)" -o ./$(BINARY_NAME)  cmd/$(PROJECT_NAME)/main.go
+
+build-release:
+	@goreleaser build --id chproxy-auth --single-target --skip-validate --clean
