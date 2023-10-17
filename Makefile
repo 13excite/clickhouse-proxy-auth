@@ -44,7 +44,7 @@ test:
 
 build:
 	@echo 'compiling binary...'
-	@GOARCH=arm64 GOOS=linux go build -ldflags "-X main.buildTimestamp=$(BUILD_DATE) -X main.gitHash=$(GIT_COMMIT) -X main.buildVersion=$(BUILD_VERSION)" -o ./$(BINARY_NAME)  cmd/$(PROJECT_NAME)/main.go
+	@GOARCH=amd64 GOOS=linux go build -ldflags "-X main.buildTimestamp=$(BUILD_DATE) -X main.gitHash=$(GIT_COMMIT) -X main.buildVersion=$(BUILD_VERSION)" -o ./$(BINARY_NAME)  cmd/$(PROJECT_NAME)/main.go
 
 build-release:
 	@goreleaser build --id chproxy-auth --single-target --skip-validate --clean
