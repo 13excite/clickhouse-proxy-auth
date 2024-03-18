@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/go-chi/chi v1.5.5
 	github.com/prometheus/client_golang v1.19.0
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/sync v0.3.0
 	gopkg.in/yaml.v2 v2.4.0
