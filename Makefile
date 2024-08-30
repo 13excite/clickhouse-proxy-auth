@@ -14,13 +14,7 @@ NO_COLOR=\033[0m
 OK_COLOR=\033[32;01m
 
 # golangci-lint config
-golangci_lint_version=latest
-vols=-v `pwd`:/app -w /app
-run_lint=docker run --rm $(vols) golangci/golangci-lint:$(golangci_lint_version)
-
-
-# golangci-lint config
-golangci_lint_version=latest
+golangci_lint_version=v1.60.3
 vols=-v `pwd`:/app -w /app
 run_lint=docker run --rm $(vols) golangci/golangci-lint:$(golangci_lint_version)
 
