@@ -1,13 +1,13 @@
 module github.com/13excite/clickhouse-proxy-auth
 
-go 1.20
+go 1.23.0
 
 require (
 	github.com/go-chi/chi v1.5.5
 	github.com/prometheus/client_golang v1.20.5
 	github.com/stretchr/testify v1.10.0
 	go.uber.org/zap v1.27.0
-	golang.org/x/sync v0.11.0
+	golang.org/x/sync v0.14.0
 	gopkg.in/yaml.v2 v2.4.0
 )
 
